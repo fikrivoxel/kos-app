@@ -1,7 +1,4 @@
-import bcrypt from "bcryptjs";
-import { Karyawan, Sequelize } from "@/framework/models";
-
-const { Op } = Sequelize;
+import Authentication from "@/controller/authentication";
 
 const initState = {
   auth: false,
@@ -36,13 +33,7 @@ export const actions = {
         commit("setInfo", {});
         return Promise.reject(new Error("Silahkan login kembali"));
       }
-      const karyawan = await Karyawan.findOne({
-        where: {
-          id: {
-            [Op.eq]: state.info.id
-          }
-        }
-      });
+      const karyawan = await Authentication.checkUser(state.info.id);
       if (_.isEmpty(karyawan)) {
         return Promise.reject(new Error("Silahkan login kembali"));
       }
@@ -55,23 +46,7 @@ export const actions = {
   },
   async login({ commit }, payload) {
     try {
-      const karyawan = await Karyawan.findOne({
-        where: {
-          username: {
-            [Op.eq]: payload.username
-          }
-        }
-      });
-      if (_.isEmpty(karyawan)) {
-        return Promise.reject(new Error("Username tidak ada"));
-      }
-      const checkPass = await bcrypt.compare(
-        payload.password,
-        karyawan.password
-      );
-      if (!checkPass) {
-        return Promise.reject(new Error("Password anda salah"));
-      }
+      const karyawan = await Authentication.login(payload);
       commit("setAuth", true);
       commit("setInfo", _.omit(karyawan.toJSON(), "password"));
       return Promise.resolve();
@@ -81,23 +56,7 @@ export const actions = {
   },
   async register(_store, payload) {
     try {
-      const karyawan = await Karyawan.findOne({
-        where: {
-          username: {
-            [Op.eq]: payload.username
-          }
-        }
-      });
-      if (!_.isEmpty(karyawan)) {
-        return Promise.reject(new Error("Username sudah ada"));
-      }
-      const hashPass = await bcrypt.hash(payload.password, 10);
-      await Karyawan.create({
-        username: payload.username,
-        password: hashPass,
-        nama_awal: payload.nama_awal,
-        nama_akhir: payload.nama_akhir
-      });
+      await Authentication.register(payload);
       return Promise.resolve();
     } catch (err) {
       return Promise.reject(err);

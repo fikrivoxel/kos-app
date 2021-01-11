@@ -37,6 +37,7 @@ Object.keys(models).forEach(modelName => {
 
 models.sequelize = sequelize;
 models.Sequelize = Sequelize;
+models.Op = Sequelize.Op;
 
 models.authenticationDB = async () => {
   try {
@@ -47,6 +48,13 @@ models.authenticationDB = async () => {
   } catch (err) {
     return Promise.reject(err);
   }
+};
+
+models.transaction = async () => {
+  const trans = await sequelize.transaction({
+    isolationLevel: Sequelize.Transaction.READ_UNCOMMITTED || "READ UNCOMMITTED"
+  });
+  return trans;
 };
 
 module.exports = models;

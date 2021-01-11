@@ -20,9 +20,39 @@
         <b-card v-if="!lists.length" class="bg-light p-3" no-body>
           Brand Tidak Ada
         </b-card>
+        <b-card-group deck>
+          <b-card v-for="(list, i) in lists" :key="i" no-body>
+            <b-card-header class="d-flex align-items-center bg-dark text-white">
+              <b-link class="text-white">
+                {{ list.nama }}
+              </b-link>
+              <button class="ml-auto close text-white" style="font-size: 1rem;">
+                <fa-layers class="fa-fw">
+                  <fa-icon :icon="['fas', 'times']" />
+                </fa-layers>
+              </button>
+            </b-card-header>
+            <b-list-group flush>
+              <b-list-group-item>
+                Harga: {{ list.harga_default | toRupiah }}
+              </b-list-group-item>
+              <b-list-group-item>
+                Alamat: {{ list.alamat || "-" }}
+              </b-list-group-item>
+            </b-list-group>
+            <b-card-footer>
+              <b-button variant="primary" size="sm" class="w-100">
+                <fa-layers class="fa-fw">
+                  <fa-icon :icon="['fas', 'edit']" />
+                </fa-layers>
+                Ganti
+              </b-button>
+            </b-card-footer>
+          </b-card>
+        </b-card-group>
       </b-col>
     </b-row>
-    <tambah-sidebar v-model="slide.tambah" />
+    <tambah-sidebar v-model="slide.tambah" @re-fetch="fetchData" />
   </b-container>
 </template>
 
@@ -37,7 +67,7 @@
 <script>
 import { mapGetters } from "vuex";
 import TitleBar from "@/components/common/title-bar.vue";
-import TambahSidebar from "@/components/kos/tambah/sidebar";
+import TambahSidebar from "@/components/kos/slide/tambah";
 
 export default {
   components: {
@@ -93,7 +123,17 @@ export default {
           ...this.cari
         });
         // eslint-disable-next-line no-empty
-      } catch (err) {}
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  },
+  filters: {
+    toRupiah(number) {
+      return new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR"
+      }).format(number);
     }
   }
 };

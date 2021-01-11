@@ -1,6 +1,4 @@
-import { Kos, Kamar, Orang, Sequelize } from "@/framework/models";
-
-const { Op } = Sequelize;
+import Kos from "@/controller/kos";
 
 const initState = {
   selected: {},
@@ -24,41 +22,48 @@ export const mutations = {
 
 export const actions = {
   async getAll({ commit }, payload) {
-    const { page, perpage, ...query } = payload;
-    const where = {};
-    if (!_.isEmpty(query.nama)) {
-      where.nama = { [Op.like]: `%${query.nama}%` };
-    }
-    if (!_.isEmpty(query.alamat)) {
-      where.alamat = { [Op.like]: `%${query.alamat}%` };
-    }
-    if (!_.isEmpty(query.alamat)) {
-      where.harga_default = { [Op.like]: `%${query.harga_default}%` };
-    }
     try {
-      const { count, rows } = await Kos.findAndCountAll({
-        offset: (page - 1) * perpage,
-        limit: perpage,
-        where,
-        include: [
-          {
-            model: Kamar
-          },
-          {
-            model: Orang
-          }
-        ]
-      });
-      if (_.isEmpty(rows)) {
-        return Promise.reject(new Error("Kos tidak ada"));
+      const { lists, pagination } = await Kos.getAll(payload);
+      commit("setLists", lists);
+      commit("setPagination", pagination);
+      return Promise.resolve();
+    } catch (err) {
+      if (err.message === "Kos tidak ada") {
+        commit("setLists", []);
+        commit("setPagination", {});
       }
-      commit("setLists", rows);
-      commit("setPagination", {
-        page,
-        perpage,
-        total_page: Math.ceil(count / perpage),
-        total_record: count
-      });
+      return Promise.reject(err);
+    }
+  },
+  async getById({ commit }, payload) {
+    try {
+      const kos = await Kos.getById(payload.id);
+      commit("setSelected", kos.toJSON());
+      return Promise.resolve();
+    } catch (err) {
+      return Promise.resolve(err);
+    }
+  },
+  async create(_store, payload) {
+    try {
+      await Kos.create(payload);
+      return Promise.resolve();
+    } catch (err) {
+      return Promise.resolve(err);
+    }
+  },
+  async update(_store, payload) {
+    try {
+      await Kos.update(payload);
+      return Promise.resolve();
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  },
+  async destroy(_store, payload) {
+    try {
+      await Kos.destroy(payload.id);
+      return Promise.resolve();
     } catch (err) {
       return Promise.reject(err);
     }
