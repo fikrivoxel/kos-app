@@ -13,7 +13,7 @@ module.exports = {
   pluginOptions: {
     electronBuilder: {
       nodeIntegration: true,
-      mainProcessWatch: ["src/store/**", "src/models/**"]
+      mainProcessWatch: ["src/store/**", "src/models/**", "src/controller/**"]
     },
     autoRouting: {
       chunkNamePrefix: "page-"

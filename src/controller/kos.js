@@ -6,13 +6,13 @@ export default {
     const { page, perpage, ...query } = data;
     const where = {};
     if (!_.isEmpty(query.nama)) {
-      where.nama = { [Op.like]: `%${query.nama}` };
+      where.nama = { [Op.like]: `%${query.nama}%` };
     }
     if (!_.isEmpty(query.alamat)) {
-      where.alamat = { [Op.like]: `%${query.alamat}` };
+      where.alamat = { [Op.like]: `%${query.alamat}%` };
     }
     if (!_.isEmpty(query.alamat)) {
-      where.harga_default = { [Op.like]: `%${query.harga_default}` };
+      where.harga_default = { [Op.like]: `%${query.harga_default}%` };
     }
     try {
       const { count, rows } = await Kos.findAndCountAll({
