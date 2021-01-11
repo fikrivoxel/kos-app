@@ -26,7 +26,11 @@
               <b-link class="text-white">
                 {{ list.nama }}
               </b-link>
-              <button class="ml-auto close text-white" style="font-size: 1rem;">
+              <button
+                class="ml-auto close text-white"
+                style="font-size: 1rem;"
+                @click="clickHapus(list.id)"
+              >
                 <fa-layers class="fa-fw">
                   <fa-icon :icon="['fas', 'times']" />
                 </fa-layers>
@@ -41,7 +45,12 @@
               </b-list-group-item>
             </b-list-group>
             <b-card-footer>
-              <b-button variant="primary" size="sm" class="w-100">
+              <b-button
+                variant="primary"
+                size="sm"
+                class="w-100"
+                @click="clickGanti(list.id)"
+              >
                 <fa-layers class="fa-fw">
                   <fa-icon :icon="['fas', 'edit']" />
                 </fa-layers>
@@ -53,6 +62,7 @@
       </b-col>
     </b-row>
     <tambah-sidebar v-model="slide.tambah" @re-fetch="fetchData" />
+    <ganti-sidebar v-model="slide.ganti" @re-fetch="fetchData" />
   </b-container>
 </template>
 
@@ -68,11 +78,13 @@
 import { mapGetters } from "vuex";
 import TitleBar from "@/components/common/title-bar.vue";
 import TambahSidebar from "@/components/kos/slide/tambah";
+import GantiSidebar from "@/components/kos/slide/ganti";
 
 export default {
   components: {
     TitleBar,
-    TambahSidebar
+    TambahSidebar,
+    GantiSidebar
   },
   data() {
     return {
@@ -82,7 +94,8 @@ export default {
         nama: ""
       },
       slide: {
-        tambah: false
+        tambah: false,
+        ganti: false
       }
     };
   },
@@ -115,6 +128,45 @@ export default {
     await this.fetchData();
   },
   methods: {
+    async clickHapus(id) {
+      try {
+        await this.$store.dispatchPromise("kos/destroy", {
+          id
+        });
+        await this.fetchData();
+        this.$bvToast.toast("Berhasil hapus kos", {
+          title: "Success",
+          variant: "success",
+          solid: true,
+          toaster: "b-toaster-bottom-right",
+          appendToast: true
+        });
+      } catch (err) {
+        this.$bvToast.toast(err.message, {
+          title: "Error",
+          variant: "danger",
+          solid: true,
+          toaster: "b-toaster-bottom-right",
+          appendToast: true
+        });
+      }
+    },
+    async clickGanti(id) {
+      try {
+        await this.$store.dispatchPromise("kos/getById", {
+          id
+        });
+        this.slide.ganti = true;
+      } catch (err) {
+        this.$bvToast.toast(err.message, {
+          title: "Error",
+          variant: "danger",
+          solid: true,
+          toaster: "b-toaster-bottom-right",
+          appendToast: true
+        });
+      }
+    },
     async fetchData() {
       try {
         await this.$store.dispatchPromise("kos/getAll", {
@@ -123,9 +175,7 @@ export default {
           ...this.cari
         });
         // eslint-disable-next-line no-empty
-      } catch (err) {
-        console.log(err);
-      }
+      } catch (err) {}
     }
   },
   filters: {

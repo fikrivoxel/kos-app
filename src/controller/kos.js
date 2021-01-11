@@ -54,7 +54,7 @@ export default {
       const kos = await Kos.findOne({
         where: {
           id: {
-            [Op.like]: id
+            [Op.eq]: id
           }
         },
         include: [
@@ -84,7 +84,7 @@ export default {
       const kos = await Kos.findOne({
         where: {
           nama: {
-            [Op.like]: data.nama
+            [Op.eq]: data.nama
           }
         },
         transaction: t
@@ -108,7 +108,7 @@ export default {
       const kos = await Kos.findOne({
         where: {
           id: {
-            [Op.like]: id
+            [Op.eq]: id
           }
         },
         transaction: t
@@ -121,7 +121,7 @@ export default {
         const checkNama = await Kos.findOne({
           where: {
             nama: {
-              [Op.like]: updated.nama
+              [Op.eq]: updated.nama
             }
           },
           transaction: t
@@ -134,7 +134,7 @@ export default {
       await Kos.update(updated, {
         where: {
           id: {
-            [Op.like]: id
+            [Op.eq]: id
           }
         },
         transaction: t
@@ -152,7 +152,7 @@ export default {
       await Kos.destroy({
         where: {
           id: {
-            [Op.like]: id
+            [Op.eq]: id
           }
         },
         transaction: t
