@@ -1,0 +1,18 @@
+.app {
+  position: relative;
+  .b-sidebar,
+  .b-sidebar-backdrop {
+    top: 31px;
+    height: calc(100vh - 31px);
+  }
+}
+
+.app-content {
+  margin-top: 31px;
+  height: calc(100vh - 31.1px);
+  padding-top: .1px;
+  overflow: auto;
+  &.guest {
+    background-color: $gray-900;
+  }
+}

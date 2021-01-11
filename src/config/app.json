@@ -1,0 +1,12 @@
+{
+  "middleware": ["auth"],
+  "plugins": [
+    "moment",
+    "vue-fragment",
+    "vue-bootstrap",
+    "vuelidate",
+    "vue-sweetalert2",
+    "vue-fontawesome",
+    "styles"
+  ]
+}

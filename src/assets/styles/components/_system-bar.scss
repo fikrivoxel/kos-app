@@ -1,0 +1,26 @@
+.system-bar {
+  position: fixed;
+  top: 0;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background-color: $dark;
+  z-index: $zindex-fixed + 10;
+  -webkit-app-region: drag;
+  .btn-group {
+    -webkit-app-region: no-drag;
+    > .btn:not(:last-child),
+    .btn:not(:first-child) {
+      border-radius: 0;
+    }
+  }
+}
+
+.system-bar-title {
+  font-size: $font-size-sm;
+  color: $white;
+  padding: {
+    left: 8px;
+    right: 8px;
+  }
+}
