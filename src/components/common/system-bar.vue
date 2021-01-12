@@ -73,7 +73,7 @@ export default {
     }),
     ...mapGetters("menu-kos", ["open"]),
     buttonBars() {
-      if (this.$route.name == "kos-id" && !_.isEmpty(this.kos)) {
+      if (this.$route.name.includes("kos-id") && !_.isEmpty(this.kos)) {
         return true;
       }
       return false;
