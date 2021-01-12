@@ -95,6 +95,8 @@ export default {
           const titlebar = this.$route.meta?.titlebar;
           if (!_.isEmpty(titlebar)) {
             this.setTitleBar(titlebar);
+          } else {
+            this.setTitleBar();
           }
         }
       }
@@ -107,7 +109,7 @@ export default {
     this.win.on("unmaximize", this.isMaxFalse);
   },
   methods: {
-    setTitleBar(titlebar) {
+    setTitleBar(titlebar = {}) {
       const { title = "", breadcrumbs = [] } = titlebar;
       this.$store.dispatch("title-bar/setTitle", title);
       this.$store.dispatch("title-bar/setBreadcrumbs", breadcrumbs);
