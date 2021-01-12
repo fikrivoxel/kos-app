@@ -151,6 +151,7 @@ export default {
       if (this.$v.$invalid) {
         return;
       }
+      this.$store.dispatch("loading/start");
       try {
         await this.$store.dispatchPromise("kos/update", {
           id: this.selected.id,
@@ -158,6 +159,7 @@ export default {
           harga_default: this.form.harga,
           alamat: this.form.alamat
         });
+        this.$store.dispatch("loading/finish");
         this.slide = false;
         this.$emit("re-fetch");
         this.$bvToast.toast("Berhasil ganti kos", {
@@ -168,6 +170,8 @@ export default {
           appendToast: true
         });
       } catch (err) {
+        this.$store.dispatch("loading/fail");
+        this.$store.dispatch("loading/finish");
         this.$bvToast.toast(err.message, {
           title: "Error",
           variant: "danger",

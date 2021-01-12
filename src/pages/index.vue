@@ -23,7 +23,7 @@
         <b-card-group deck>
           <b-card v-for="(list, i) in lists" :key="i" no-body>
             <b-card-header class="d-flex align-items-center bg-dark text-white">
-              <b-link class="text-white">
+              <b-link class="text-white" :to="list.id | toLink">
                 {{ list.nama }}
               </b-link>
               <button
@@ -183,6 +183,9 @@ export default {
     }
   },
   filters: {
+    toLink(id) {
+      return `/kos/${id}`;
+    },
     toRupiah(number) {
       return new Intl.NumberFormat("id-ID", {
         style: "currency",

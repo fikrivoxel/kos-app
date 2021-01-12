@@ -123,12 +123,14 @@ export default {
       if (this.$v.$invalid) {
         return;
       }
+      this.$store.dispatch("loading/start");
       try {
         await this.$store.dispatchPromise("kos/create", {
           nama: this.form.nama,
           harga_default: this.form.harga,
           alamat: this.form.alamat
         });
+        this.$store.dispatch("loading/finish");
         this.slide = false;
         this.$emit("re-fetch");
         this.$bvToast.toast("Berhasil tambah kos", {
@@ -139,6 +141,8 @@ export default {
           appendToast: true
         });
       } catch (err) {
+        this.$store.dispatch("loading/fail");
+        this.$store.dispatch("loading/finish");
         this.$bvToast.toast(err.message, {
           title: "Error",
           variant: "danger",

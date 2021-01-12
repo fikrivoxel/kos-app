@@ -5,6 +5,11 @@
         Kos App
       </div>
       <b-button-group size="sm" class="ml-auto">
+        <b-button v-if="buttonBars" variant="dark" @click="openMenuKos">
+          <fa-layers class="fa-fw">
+            <fa-icon :icon="['fas', 'bars']" />
+          </fa-layers>
+        </b-button>
         <b-dropdown v-if="auth" variant="dark" size="sm" no-caret right>
           <template #button-content>
             <fa-layers class="fa-fw">
@@ -62,7 +67,17 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("authentication", ["auth"])
+    ...mapGetters("authentication", ["auth"]),
+    ...mapGetters("kos", {
+      kos: "selected"
+    }),
+    ...mapGetters("menu-kos", ["open"]),
+    buttonBars() {
+      if (this.$route.name == "kos-id" && !_.isEmpty(this.kos)) {
+        return true;
+      }
+      return false;
+    }
   },
   mounted() {
     this.checkWindowEmpty();
@@ -71,6 +86,9 @@ export default {
     this.win.on("unmaximize", this.isMaxFalse);
   },
   methods: {
+    openMenuKos() {
+      this.$store.dispatch("menu-kos/setOpen", !this.open);
+    },
     checkWindowEmpty() {
       if (this.win === null) {
         this.win = remote.getCurrentWindow();

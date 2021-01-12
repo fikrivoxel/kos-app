@@ -92,6 +92,8 @@ class Middleware {
           }
         );
       }
+    } else {
+      this.next();
     }
   }
 }
