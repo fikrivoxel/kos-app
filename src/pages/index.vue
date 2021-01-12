@@ -168,6 +168,7 @@ export default {
       }
     },
     async fetchData() {
+      this.$store.dispatch("loading/start");
       try {
         await this.$store.dispatchPromise("kos/getAll", {
           page: this.page,
@@ -175,7 +176,10 @@ export default {
           ...this.cari
         });
         // eslint-disable-next-line no-empty
-      } catch (err) {}
+      } catch (err) {
+        this.$store.dispatch("loading/fail");
+      }
+      this.$store.dispatch("loading/finish");
     }
   },
   filters: {

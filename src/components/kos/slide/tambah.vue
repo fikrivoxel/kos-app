@@ -129,8 +129,8 @@ export default {
           harga_default: this.form.harga,
           alamat: this.form.alamat
         });
-        this.$emit("re-fetch");
         this.slide = false;
+        this.$emit("re-fetch");
         this.$bvToast.toast("Berhasil tambah kos", {
           title: "Success",
           variant: "success",

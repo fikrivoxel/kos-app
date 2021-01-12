@@ -1,12 +1,13 @@
 .system-bar {
   position: fixed;
   top: 0;
-  display: flex;
-  align-items: center;
   width: 100%;
-  background-color: $dark;
   z-index: $zindex-fixed + 10;
   -webkit-app-region: drag;
+  .progress {
+    height: 2px;
+    border-radius: 0;
+  }
   .btn-group {
     -webkit-app-region: no-drag;
     > .btn:not(:last-child),
@@ -14,6 +15,11 @@
       border-radius: 0;
     }
   }
+}
+.system-bar-panel {
+  background-color: $dark;
+  display: flex;
+  align-items: center;
 }
 
 .system-bar-title {
