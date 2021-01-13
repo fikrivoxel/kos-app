@@ -19,7 +19,17 @@
         </b-button>
       </div>
     </template>
-    a
+    <b-list-group flush>
+      <b-list-group-item :to="toLink('kamar')" @click="toLinkClose">
+        Kamar
+      </b-list-group-item>
+      <b-list-group-item :to="toLink('kamar')" @click="toLinkClose">
+        Orang
+      </b-list-group-item>
+      <b-list-group-item :to="toLink('setting')" @click="toLinkClose">
+        Setting
+      </b-list-group-item>
+    </b-list-group>
   </b-sidebar>
 </template>
 
@@ -37,6 +47,22 @@ export default {
       },
       set(val) {
         this.$store.dispatch("menu-kos/setOpen", val);
+      }
+    }
+  },
+  beforeDestroy() {
+    if (this.slide) {
+      this.slide = false;
+    }
+  },
+  methods: {
+    toLink(link) {
+      const id = this.$route.params?.id;
+      return `/kos/${id}/${link}`;
+    },
+    toLinkClose() {
+      if (this.slide) {
+        this.slide = false;
       }
     }
   }

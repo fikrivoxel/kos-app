@@ -83,25 +83,6 @@ export default {
       return false;
     }
   },
-  watch: {
-    $route: {
-      deep: true,
-      handler() {
-        if (
-          this.$route.name &&
-          this.$route.name.includes("kos-id") &&
-          !_.isEmpty(this.kos)
-        ) {
-          const titlebar = this.$route.meta?.titlebar;
-          if (!_.isEmpty(titlebar)) {
-            this.setTitleBar(titlebar);
-          } else {
-            this.setTitleBar();
-          }
-        }
-      }
-    }
-  },
   mounted() {
     this.checkWindowEmpty();
     this.detectIsMax();
@@ -109,11 +90,6 @@ export default {
     this.win.on("unmaximize", this.isMaxFalse);
   },
   methods: {
-    setTitleBar(titlebar = {}) {
-      const { title = "", breadcrumbs = [] } = titlebar;
-      this.$store.dispatch("title-bar/setTitle", title);
-      this.$store.dispatch("title-bar/setBreadcrumbs", breadcrumbs);
-    },
     openMenuKos() {
       this.$store.dispatch("menu-kos/setOpen", !this.open);
     },

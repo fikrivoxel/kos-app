@@ -20,7 +20,8 @@ module.exports = (sequelize, DataTypes) => {
       },
       nama: DataTypes.STRING,
       alamat: DataTypes.STRING,
-      harga_default: DataTypes.FLOAT
+      harga_default: DataTypes.FLOAT,
+      pasutri: DataTypes.BOOLEAN
     },
     {
       sequelize,

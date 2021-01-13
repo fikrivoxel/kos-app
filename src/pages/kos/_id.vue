@@ -11,7 +11,7 @@
 <route>
 {
   "meta": {
-    "middleware": ["kos"]
+    "middleware": ["kos", "title-bar"]
   }
 }
 </route>

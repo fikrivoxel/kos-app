@@ -21,7 +21,6 @@ module.exports = (sequelize, DataTypes) => {
       nama: DataTypes.STRING,
       harga_default: DataTypes.FLOAT,
       dihuni: DataTypes.BOOLEAN,
-      pasutri: DataTypes.BOOLEAN,
       kos_id: DataTypes.UUID
     },
     {
