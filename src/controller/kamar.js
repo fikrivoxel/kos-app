@@ -1,30 +1,43 @@
-import { Kos, Kamar, Orang, Op, transaction } from "@/framework/models";
+import {
+  Kos,
+  Kamar,
+  Orang,
+  Op,
+  transaction,
+  sequelize
+} from "@/framework/models";
 
 export default {
   async getAll(data = {}) {
     const t = await transaction();
     const { page, perpage, ...query } = data;
-    const where = {};
+    const where = [];
     if (!_.isEmpty(query.nama)) {
-      where.nama = { [Op.like]: `%${query.nama}%` };
+      where.push({ nama: { [Op.like]: `%${query.nama}%` } });
     }
-    if (!_.isEmpty(query.alamat)) {
-      where.alamat = { [Op.like]: `%${query.alamat}%` };
+    if (!_.isEmpty(query.harga)) {
+      where.push(
+        sequelize.where(
+          sequelize.cast(sequelize.col("Kamar.harga"), "varchar"),
+          {
+            [Op.like]: `%${parseInt(query.harga)}%`
+          }
+        )
+      );
     }
-    if (!_.isEmpty(query.tipe)) {
-      where.tipe = { [Op.eq]: query.tipe };
-    }
-    if (!_.isEmpty(query.alamat)) {
-      where.alamat = { [Op.like]: `%${query.alamat}%` };
+    if (!_.isEmpty(query.dihuni)) {
+      where.push({ dihuni: { [Op.eq]: query.dihuni } });
     }
     try {
-      const { count, rows } = await Kos.findAndCountAll({
+      const { count, rows } = await Kamar.findAndCountAll({
         offset: (page - 1) * perpage,
         limit: perpage,
-        where,
+        where: {
+          [Op.and]: where
+        },
         include: [
           {
-            model: Kamar
+            model: Kos
           },
           {
             model: Orang
@@ -34,7 +47,7 @@ export default {
       });
       if (_.isEmpty(rows)) {
         await t.rollback();
-        return Promise.reject(new Error("Kos tidak ada"));
+        return Promise.reject(new Error("Kamar tidak ada"));
       }
       await t.commit();
       return {
@@ -54,7 +67,7 @@ export default {
   async getById(id) {
     const t = await transaction();
     try {
-      const kos = await Kos.findOne({
+      const kamar = await Kamar.findOne({
         where: {
           id: {
             [Op.eq]: id
@@ -62,7 +75,7 @@ export default {
         },
         include: [
           {
-            model: Kamar
+            model: Kos
           },
           {
             model: Orang
@@ -70,12 +83,12 @@ export default {
         ],
         transaction: t
       });
-      if (_.isEmpty(kos)) {
+      if (_.isEmpty(kamar)) {
         await t.rollback();
-        return Promise.reject(new Error("Kos tidak ada"));
+        return Promise.reject(new Error("Kamar tidak ada"));
       }
       await t.commit();
-      return kos;
+      return kamar;
     } catch (err) {
       await t.rollback();
       return Promise.reject(err);
@@ -84,7 +97,7 @@ export default {
   async create(data) {
     const t = await transaction();
     try {
-      const kos = await Kos.findOne({
+      const kamar = await Kamar.findOne({
         where: {
           nama: {
             [Op.eq]: data.nama
@@ -92,11 +105,59 @@ export default {
         },
         transaction: t
       });
-      if (!_.isEmpty(kos)) {
+      if (!_.isEmpty(kamar)) {
         await t.rollback();
-        return Promise.reject(new Error("Kos sudah ada"));
+        return Promise.reject(new Error("Kamar sudah ada"));
       }
-      await Kos.create(data, { transaction: t });
+      await Kamar.create(data, { transaction: t });
+      await t.commit();
+      return Promise.resolve();
+    } catch (err) {
+      await t.rollback();
+      return Promise.reject(err);
+    }
+  },
+  async createBulk(datas) {
+    const t = await transaction();
+    const checkUniq = datas.filter((value, index, arr) => {
+      if (arr.findIndex(s => s.name === value.name) !== index) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+    if (!_.isEmpty(checkUniq)) {
+      await t.rollback();
+      return Promise.reject(new Error("Nama kamar tidak boleh sama"));
+    }
+    let errLoop = null;
+    for (const data of datas) {
+      try {
+        const kamar = await Kamar.findOne({
+          where: {
+            nama: {
+              [Op.eq]: data.nama
+            }
+          },
+          transaction: t
+        });
+        if (!_.isEmpty(kamar)) {
+          errLoop = new Error("Kamar sudah ada");
+          break;
+        }
+      } catch (err) {
+        errLoop = err;
+        break;
+      }
+    }
+    if (errLoop) {
+      await t.rollback();
+      return Promise.reject(errLoop);
+    }
+    try {
+      await Kamar.bulkCreate(datas, {
+        transaction: t
+      });
       await t.commit();
       return Promise.resolve();
     } catch (err) {
@@ -108,7 +169,7 @@ export default {
     const t = await transaction();
     const { id, ...updated } = data;
     try {
-      const kos = await Kos.findOne({
+      const kamar = await Kamar.findOne({
         where: {
           id: {
             [Op.eq]: id
@@ -116,12 +177,12 @@ export default {
         },
         transaction: t
       });
-      if (_.isEmpty(kos)) {
+      if (_.isEmpty(kamar)) {
         await t.rollback();
-        return Promise.reject(new Error("Kos tidak ada"));
+        return Promise.reject(new Error("Kamar tidak ada"));
       }
-      if (kos.nama !== updated.nama) {
-        const checkNama = await Kos.findOne({
+      if (kamar.nama !== updated.nama) {
+        const checkNama = await Kamar.findOne({
           where: {
             nama: {
               [Op.eq]: updated.nama
@@ -131,10 +192,10 @@ export default {
         });
         if (!_.isEmpty(checkNama)) {
           await t.rollback();
-          return Promise.reject(new Error("Nama Kos tidak boleh sama"));
+          return Promise.reject(new Error("Nama Kamar tidak boleh sama"));
         }
       }
-      await Kos.update(updated, {
+      await Kamar.update(updated, {
         where: {
           id: {
             [Op.eq]: id
@@ -152,7 +213,7 @@ export default {
   async destroy(id) {
     const t = await transaction();
     try {
-      await Kos.destroy({
+      await Kamar.destroy({
         where: {
           id: {
             [Op.eq]: id

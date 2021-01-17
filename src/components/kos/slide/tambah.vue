@@ -53,6 +53,9 @@
                 </b-form-invalid-feedback>
               </template>
             </b-form-group>
+            <b-form-group label="Tipe" label-for="tipe">
+              <b-select v-model="form.tipe" :options="tipeOpts" />
+            </b-form-group>
             <b-form-group label="Alamat" label-for="alamat">
               <b-textarea
                 v-model="form.alamat"
@@ -85,6 +88,7 @@ export default {
       form: {
         nama: "",
         harga: "",
+        tipe: "biasa",
         alamat: ""
       }
     };
@@ -97,6 +101,12 @@ export default {
       set(val) {
         this.$emit("input", val);
       }
+    },
+    tipeOpts() {
+      return [
+        { value: "biasa", text: "Biasa" },
+        { value: "pasutri", text: "Pasutri" }
+      ];
     }
   },
   validations: {
@@ -128,6 +138,7 @@ export default {
         await this.$store.dispatchPromise("kos/create", {
           nama: this.form.nama,
           harga_default: this.form.harga,
+          tipe: this.form.tipe,
           alamat: this.form.alamat
         });
         this.$store.dispatch("loading/finish");

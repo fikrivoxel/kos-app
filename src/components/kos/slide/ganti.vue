@@ -53,6 +53,9 @@
                 </b-form-invalid-feedback>
               </template>
             </b-form-group>
+            <b-form-group label="Tipe" label-for="tipe">
+              <b-select v-model="form.tipe" :options="tipeOpts" />
+            </b-form-group>
             <b-form-group label="Alamat" label-for="alamat">
               <b-textarea
                 v-model="form.alamat"
@@ -86,6 +89,7 @@ export default {
       form: {
         nama: "",
         harga: "",
+        tipe: "",
         alamat: ""
       }
     };
@@ -99,6 +103,12 @@ export default {
       set(val) {
         this.$emit("input", val);
       }
+    },
+    tipeOpts() {
+      return [
+        { value: "biasa", text: "Biasa" },
+        { value: "pasutri", text: "Pasutri" }
+      ];
     }
   },
   watch: {
@@ -126,6 +136,7 @@ export default {
       this.form = {
         nama: this.selected.nama,
         harga: this.selected.harga_default,
+        tipe: this.selected.tipe,
         alamat: this.selected.alamat
       };
     },
@@ -133,6 +144,7 @@ export default {
       this.form = {
         nama: "",
         harga: "",
+        tipe: "",
         alamat: ""
       };
       this.$nextTick(() => {
@@ -157,6 +169,7 @@ export default {
           id: this.selected.id,
           nama: this.form.nama,
           harga_default: this.form.harga,
+          tipe: this.form.tipe,
           alamat: this.form.alamat
         });
         this.$store.dispatch("loading/finish");

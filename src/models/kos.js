@@ -21,7 +21,10 @@ module.exports = (sequelize, DataTypes) => {
       nama: DataTypes.STRING,
       alamat: DataTypes.STRING,
       harga_default: DataTypes.FLOAT,
-      pasutri: DataTypes.BOOLEAN
+      tipe: {
+        type: DataTypes.ENUM("biasa", "pasutri"),
+        defaultValue: "biasa"
+      }
     },
     {
       sequelize,

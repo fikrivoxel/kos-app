@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-show="show">
     <b-progress
       v-if="show"
       :value="percent"

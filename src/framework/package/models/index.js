@@ -39,22 +39,28 @@ models.sequelize = sequelize;
 models.Sequelize = Sequelize;
 models.Op = Sequelize.Op;
 
-models.authenticationDB = async () => {
-  try {
-    if (env === "development") {
-      await sequelize.sync({ alter: true });
-    }
-    return Promise.resolve();
-  } catch (err) {
-    return Promise.reject(err);
-  }
-};
-
-models.transaction = async () => {
+const transaction = async () => {
   const trans = await sequelize.transaction({
     isolationLevel: Sequelize.Transaction.READ_UNCOMMITTED || "READ UNCOMMITTED"
   });
   return trans;
 };
+
+const authenticationDB = async () => {
+  if (env === "development") {
+    const t = await transaction();
+    try {
+      await sequelize.sync({ alter: true, transaction: t });
+      await t.commit();
+    } catch (err) {
+      await t.rollback();
+      return Promise.reject(err);
+    }
+  }
+  return Promise.resolve();
+};
+
+models.transaction = transaction;
+models.authenticationDB = authenticationDB;
 
 module.exports = models;

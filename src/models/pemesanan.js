@@ -1,22 +1,19 @@
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Orang extends Model {
+  class Pemesanan extends Model {
     static associate(model) {
-      Orang.belongsTo(model.Kos, {
-        foreignKey: "kos_id"
-      });
-      Orang.belongsTo(model.Kamar, {
+      Pemesanan.belongsTo(model.Kamar, {
         foreignKey: "kamar_id"
       });
-      Orang.hasOne(model.DataDiri, {
+      Pemesanan.belongsTo(model.Orang, {
         foreignKey: "orang_id"
       });
-      Orang.hasMany(model.Pemesanan, {
-        foreignKey: "orang_id"
+      Pemesanan.hasMany(model.Pembayaran, {
+        foreignKey: "pemesanan_id"
       });
     }
   }
-  Orang.init(
+  Pemesanan.init(
     {
       id: {
         type: DataTypes.UUID,
@@ -24,10 +21,14 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true
       },
-      nama_awal: DataTypes.STRING,
-      nama_akhir: DataTypes.STRING,
+      tgl_masuk: DataTypes.DATE,
+      tgl_keluar: DataTypes.DATE,
+      batas_akhir: DataTypes.DATE,
+      harga: DataTypes.FLOAT,
+      kekurangan: DataTypes.FLOAT,
+      status: DataTypes.ENUM("lunas", "hutang"),
       kamar_id: DataTypes.UUID,
-      kos_id: DataTypes.UUID
+      orang_id: DataTypes.UUID
     },
     {
       sequelize,
@@ -35,8 +36,8 @@ module.exports = (sequelize, DataTypes) => {
       underscored: true,
       paranoid: true,
       freezeTableName: true,
-      modelName: "Orang"
+      modelName: "Pemesanan"
     }
   );
-  return Orang;
+  return Pemesanan;
 };

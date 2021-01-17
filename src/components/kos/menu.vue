@@ -20,6 +20,9 @@
       </div>
     </template>
     <b-list-group flush>
+      <b-list-group-item :to="toLink('')" @click="toLinkClose">
+        Home
+      </b-list-group-item>
       <b-list-group-item :to="toLink('kamar')" @click="toLinkClose">
         Kamar
       </b-list-group-item>

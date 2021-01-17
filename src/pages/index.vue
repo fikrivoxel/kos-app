@@ -21,44 +21,24 @@
           Brand Tidak Ada
         </b-card>
         <b-card-group deck>
-          <b-card v-for="(list, i) in lists" :key="i" no-body>
-            <b-card-header class="d-flex align-items-center bg-dark text-white">
-              <b-link class="text-white" :to="list.id | toLink">
-                {{ list.nama }}
-              </b-link>
-              <button
-                class="ml-auto close text-white"
-                style="font-size: 1rem;"
-                @click="clickHapus(list.id)"
-              >
-                <fa-layers class="fa-fw">
-                  <fa-icon :icon="['fas', 'times']" />
-                </fa-layers>
-              </button>
-            </b-card-header>
-            <b-list-group flush>
-              <b-list-group-item>
-                Harga: {{ list.harga_default | toRupiah }}
-              </b-list-group-item>
-              <b-list-group-item>
-                Alamat: {{ list.alamat || "-" }}
-              </b-list-group-item>
-            </b-list-group>
-            <b-card-footer>
-              <b-button
-                variant="primary"
-                size="sm"
-                class="w-100"
-                @click="clickGanti(list.id)"
-              >
-                <fa-layers class="fa-fw">
-                  <fa-icon :icon="['fas', 'edit']" />
-                </fa-layers>
-                Ganti
-              </b-button>
-            </b-card-footer>
-          </b-card>
+          <template v-for="(list, i) in lists">
+            <card-kos
+              :list="list"
+              :key="i"
+              @ganti="clickGanti"
+              @hapus="clickHapus"
+            />
+          </template>
         </b-card-group>
+      </b-col>
+      <b-col v-if="lists.length" cols="12">
+        <b-pagination
+          v-model="page"
+          class="my-3"
+          :total-rows="pagination.total_record"
+          :per-page="perpage"
+          align="center"
+        />
       </b-col>
     </b-row>
     <tambah-sidebar v-model="slide.tambah" @re-fetch="fetchData" />
@@ -79,12 +59,14 @@ import { mapGetters } from "vuex";
 import TitleBar from "@/components/common/title-bar.vue";
 import TambahSidebar from "@/components/kos/slide/tambah";
 import GantiSidebar from "@/components/kos/slide/ganti";
+import CardKos from "@/components/kos/card";
 
 export default {
   components: {
     TitleBar,
     TambahSidebar,
-    GantiSidebar
+    GantiSidebar,
+    CardKos
   },
   data() {
     return {
@@ -175,22 +157,10 @@ export default {
           perpage: this.perpage,
           ...this.cari
         });
-        // eslint-disable-next-line no-empty
       } catch (err) {
         this.$store.dispatch("loading/fail");
       }
       this.$store.dispatch("loading/finish");
-    }
-  },
-  filters: {
-    toLink(id) {
-      return `/kos/${id}`;
-    },
-    toRupiah(number) {
-      return new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR"
-      }).format(number);
     }
   }
 };
