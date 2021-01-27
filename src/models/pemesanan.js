@@ -3,13 +3,16 @@ module.exports = (sequelize, DataTypes) => {
   class Pemesanan extends Model {
     static associate(model) {
       Pemesanan.belongsTo(model.Kamar, {
-        foreignKey: "kamar_id"
+        foreignKey: "kamar_id",
+        as: "Kamar"
       });
       Pemesanan.belongsTo(model.Orang, {
-        foreignKey: "orang_id"
+        foreignKey: "orang_id",
+        as: "Orang"
       });
       Pemesanan.hasMany(model.Pembayaran, {
-        foreignKey: "pemesanan_id"
+        foreignKey: "pemesanan_id",
+        as: "Pembayaran"
       });
     }
   }

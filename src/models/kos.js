@@ -3,10 +3,12 @@ module.exports = (sequelize, DataTypes) => {
   class Kos extends Model {
     static associate(model) {
       Kos.hasMany(model.Kamar, {
-        foreignKey: "kos_id"
+        foreignKey: "kos_id",
+        as: "Kamar"
       });
       Kos.hasMany(model.Orang, {
-        foreignKey: "kos_id"
+        foreignKey: "kos_id",
+        as: "Orang"
       });
     }
   }

@@ -3,16 +3,20 @@ module.exports = (sequelize, DataTypes) => {
   class Orang extends Model {
     static associate(model) {
       Orang.belongsTo(model.Kos, {
-        foreignKey: "kos_id"
+        foreignKey: "kos_id",
+        as: "Kos"
       });
       Orang.belongsTo(model.Kamar, {
-        foreignKey: "kamar_id"
+        foreignKey: "kamar_id",
+        as: "Kamar"
       });
       Orang.hasOne(model.DataDiri, {
-        foreignKey: "orang_id"
+        foreignKey: "orang_id",
+        as: "DataDiri"
       });
       Orang.hasMany(model.Pemesanan, {
-        foreignKey: "orang_id"
+        foreignKey: "orang_id",
+        as: "Pemesanan"
       });
     }
   }

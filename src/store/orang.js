@@ -1,4 +1,4 @@
-import Kamar from "@/controller/kamar";
+import Orang from "@/controller/orang";
 
 const initState = {
   selected: {},
@@ -23,12 +23,12 @@ export const mutations = {
 export const actions = {
   async getAll({ commit }, payload) {
     try {
-      const { lists, pagination } = await Kamar.getAll(payload);
+      const { lists, pagination } = await Orang.getAll(payload);
       commit("setLists", lists);
       commit("setPagination", pagination);
       return Promise.resolve();
     } catch (err) {
-      if (err.message === "Kamar tidak ada") {
+      if (err.message === "Orang tidak ada") {
         commit("setLists", []);
         commit("setPagination", {});
       }
@@ -37,7 +37,7 @@ export const actions = {
   },
   async getById({ commit }, payload) {
     try {
-      const kamar = await Kamar.getById(payload.id);
+      const kamar = await Orang.getById(payload.id);
       commit("setSelected", kamar.toJSON());
       return Promise.resolve();
     } catch (err) {
@@ -46,7 +46,7 @@ export const actions = {
   },
   async create(_store, payload) {
     try {
-      await Kamar.create(payload);
+      await Orang.create(payload);
       return Promise.resolve();
     } catch (err) {
       return Promise.resolve(err);
@@ -54,7 +54,7 @@ export const actions = {
   },
   async createBulk(_store, payload) {
     try {
-      await Kamar.createBulk(payload);
+      await Orang.createBulk(payload);
       return Promise.resolve();
     } catch (err) {
       return Promise.resolve(err);
@@ -62,7 +62,7 @@ export const actions = {
   },
   async update(_store, payload) {
     try {
-      await Kamar.update(payload);
+      await Orang.update(payload);
       return Promise.resolve();
     } catch (err) {
       return Promise.reject(err);
@@ -70,7 +70,7 @@ export const actions = {
   },
   async destroy(_store, payload) {
     try {
-      await Kamar.destroy(payload.id);
+      await Orang.destroy(payload.id);
       return Promise.resolve();
     } catch (err) {
       return Promise.reject(err);

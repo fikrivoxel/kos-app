@@ -3,13 +3,16 @@ module.exports = (sequelize, DataTypes) => {
   class Kamar extends Model {
     static associate(model) {
       Kamar.belongsTo(model.Kos, {
-        foreignKey: "kos_id"
+        foreignKey: "kos_id",
+        as: "Kos"
       });
       Kamar.hasMany(model.Orang, {
-        foreignKey: "kamar_id"
+        foreignKey: "kamar_id",
+        as: "Orang"
       });
       Kamar.hasMany(model.Pemesanan, {
-        foreignKey: "kamar_id"
+        foreignKey: "kamar_id",
+        as: "Pemesanan"
       });
     }
   }

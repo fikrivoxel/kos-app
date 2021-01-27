@@ -5,6 +5,11 @@
     top: 31.1px;
     height: calc(100vh - 31px);
   }
+  .b-sidebar-outer {
+    &.menu {
+      z-index: 1036;
+    }
+  }
 }
 
 .app-content {
@@ -15,4 +20,10 @@
   &.guest {
     background-color: $gray-900;
   }
+}
+
+.swal2-container {
+  top: 31px;
+  height: calc(100vh - 31px);
+  z-index: 1034;
 }

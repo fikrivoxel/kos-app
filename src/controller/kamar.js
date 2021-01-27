@@ -20,13 +20,16 @@ export default {
         sequelize.where(
           sequelize.cast(sequelize.col("Kamar.harga"), "varchar"),
           {
-            [Op.like]: `%${parseInt(query.harga)}%`
+            [Op.like]: `%${query.harga}%`
           }
         )
       );
     }
     if (!_.isEmpty(query.dihuni)) {
       where.push({ dihuni: { [Op.eq]: query.dihuni } });
+    }
+    if (!_.isEmpty(query.kos_id)) {
+      where.push({ kos_id: { [Op.eq]: query.kos_id } });
     }
     try {
       const { count, rows } = await Kamar.findAndCountAll({
@@ -37,10 +40,12 @@ export default {
         },
         include: [
           {
-            model: Kos
+            model: Kos,
+            as: "Kos"
           },
           {
-            model: Orang
+            model: Orang,
+            as: "Orang"
           }
         ],
         transaction: t
@@ -75,10 +80,12 @@ export default {
         },
         include: [
           {
-            model: Kos
+            model: Kos,
+            as: "Kos"
           },
           {
-            model: Orang
+            model: Orang,
+            as: "Orang"
           }
         ],
         transaction: t

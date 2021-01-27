@@ -1,7 +1,7 @@
 <template>
   <b-row>
     <b-col cols="12">
-      <pencarian-kamar v-model="cari" />
+      <pencarian-orang v-model="cari" />
     </b-col>
     <b-col cols="12">
       <b-card no-body class="mb-3">
@@ -11,21 +11,11 @@
             <b-button
               variant="primary"
               v-b-tooltip.hover
-              title="Tambah Satuan"
-              @click="slide.tambah_satuan = true"
+              title="Tambah"
+              @click="slide.tambah = true"
             >
               <fa-layers class="fa-fw">
                 <fa-icon :icon="['fas', 'plus']" />
-              </fa-layers>
-            </b-button>
-            <b-button
-              variant="danger"
-              v-b-tooltip.hover
-              title="Tambah Banyak"
-              @click="slide.tambah_bulk = true"
-            >
-              <fa-layers class="fa-fw">
-                <fa-icon :icon="['fas', 'plus-square']" />
               </fa-layers>
             </b-button>
             <b-button
@@ -68,13 +58,6 @@
           <template #empty>
             Kosong
           </template>
-          <template #cell(dihuni)="{item}">
-            <fa-layers
-              :class="['fa-fw', item.dihuni ? 'text-success' : 'text-danger']"
-            >
-              <fa-icon :icon="['fas', 'bed']" />
-            </fa-layers>
-          </template>
           <template #cell(actions)="{item}">
             <b-button-group size="sm">
               <b-button variant="primary" @click="getData(item)">
@@ -82,17 +65,10 @@
                   <fa-icon :icon="['fas', 'edit']" />
                 </fa-layers>
               </b-button>
-              <b-button
-                v-if="!item.dihuni"
-                variant="danger"
-                @click="hapusKamar(item)"
-              >
+              <b-button variant="danger" @click="hapusOrang(item)">
                 <fa-layers :class="['fa-fw']">
                   <fa-icon :icon="['fas', 'trash']" />
                 </fa-layers>
-              </b-button>
-              <b-button v-if="item.dihuni" variant="primary">
-                Check Pembayaran
               </b-button>
             </b-button-group>
           </template>
@@ -102,9 +78,6 @@
         </b-card-footer>
       </b-card>
     </b-col>
-    <tambah-satuan v-model="slide.tambah_satuan" @re-fetch="fetchData" />
-    <tambah-bulk v-model="slide.tambah_bulk" @re-fetch="fetchData" />
-    <ganti v-model="slide.ganti" @re-fetch="fetchData" />
   </b-row>
 </template>
 
@@ -112,14 +85,14 @@
 {
   "meta": {
     "titlebar": {
-      "title": "Kamar",
+      "title": "Orang",
       "breadcrumbs": [
         {
           "text": "Home",
           "to": "/"
         },
         {
-          "text": "Kamar",
+          "text": "Orang",
           "active": true
         }
       ]
@@ -130,37 +103,33 @@
 
 <script>
 import { mapGetters } from "vuex";
-import PencarianKamar from "@/components/kamar/pencarian";
-import TambahSatuan from "@/components/kamar/slide/tambah";
-import TambahBulk from "@/components/kamar/slide/tambah-bulk";
-import Ganti from "@/components/kamar/slide/ganti";
+import PencarianOrang from "@/components/orang/pencarian";
 
 export default {
-  components: { PencarianKamar, TambahSatuan, TambahBulk, Ganti },
+  components: {
+    PencarianOrang
+  },
   data() {
     return {
       page: 1,
       perpage: 10,
       cari: {},
       slide: {
-        tambah_satuan: false,
-        tambah_bulk: false,
+        tambah: false,
         ganti: false,
         lihat: false
       }
     };
   },
   computed: {
-    ...mapGetters("kamar", ["lists", "pagination"]),
+    ...mapGetters("orang", ["lists", "pagination"]),
     ...mapGetters("kos", {
       kos: "selected"
     }),
     fields() {
       return [
         { key: "nama", text: "Nama" },
-        { key: "harga", text: "Harga" },
-        { key: "dihuni", text: "Dihuni" },
-        { key: "actions", text: "Actions" }
+        { key: "nomor_ktp", text: "Nomor KTP" }
       ];
     },
     perpages() {
@@ -193,7 +162,7 @@ export default {
     async fetchData() {
       this.$store.dispatch("loading/start");
       try {
-        await this.$store.dispatchPromise("kamar/getAll", {
+        await this.$store.dispatchPromise("orang/getAll", {
           page: this.page,
           perpage: this.perpage,
           kos_id: this.kos.id,
@@ -210,7 +179,7 @@ export default {
         return;
       }
       try {
-        await this.$store.dispatchPromise("kamar/getById", { id });
+        await this.$store.dispatchPromise("orang/getById", { id });
         if (type === "ganti") {
           this.slide.ganti = true;
         } else if (type === "lihat") {
@@ -231,7 +200,7 @@ export default {
         });
       }
     },
-    async hapusKamar(item) {
+    async hapusOrang(item) {
       try {
         await this.getData(item, "hapus");
         const res = await this.$swal.fire({
@@ -242,7 +211,7 @@ export default {
           confirmButtonText: "Ya Hapus Aja!"
         });
         if (res.isConfirmed) {
-          await this.$store.dispatchPromise("kamar/destroy", { id: item.id });
+          await this.$store.dispatchPromise("orang/destroy", { id: item.id });
           await this.fetchData();
         }
       } catch (err) {

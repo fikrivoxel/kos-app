@@ -5,6 +5,7 @@
     backdrop
     bg-variant="white"
     backdrop-variant="dark"
+    class="menu"
   >
     <template #header-close>
       <fa-layers class="fa-fw">
@@ -26,7 +27,13 @@
       <b-list-group-item :to="toLink('kamar')" @click="toLinkClose">
         Kamar
       </b-list-group-item>
-      <b-list-group-item :to="toLink('kamar')" @click="toLinkClose">
+      <b-list-group-item :to="toLink('pemesanan')" @click="toLinkClose">
+        Pemesanan
+      </b-list-group-item>
+      <b-list-group-item :to="toLink('bayar')" @click="toLinkClose">
+        Bayar
+      </b-list-group-item>
+      <b-list-group-item :to="toLink('orang')" @click="toLinkClose">
         Orang
       </b-list-group-item>
       <b-list-group-item :to="toLink('setting')" @click="toLinkClose">

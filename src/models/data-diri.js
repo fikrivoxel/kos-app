@@ -3,7 +3,8 @@ module.exports = (sequelize, DataTypes) => {
   class DataDiri extends Model {
     static associate(model) {
       DataDiri.belongsTo(model.Orang, {
-        foreignKey: "orang_id"
+        foreignKey: "orang_id",
+        as: "Orang"
       });
     }
   }

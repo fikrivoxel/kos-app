@@ -24,6 +24,7 @@
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.6.5",
     "electron-promise-ipc": "^2.2.4",
+    "faker": "^5.1.0",
     "jquery": "^3.5.1",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",

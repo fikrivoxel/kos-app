@@ -24,10 +24,12 @@ export default {
         where,
         include: [
           {
-            model: Kamar
+            model: Kamar,
+            as: "Kamar"
           },
           {
-            model: Orang
+            model: Orang,
+            as: "Orang"
           }
         ],
         transaction: t
@@ -62,10 +64,12 @@ export default {
         },
         include: [
           {
-            model: Kamar
+            model: Kamar,
+            as: "Kamar"
           },
           {
-            model: Orang
+            model: Orang,
+            as: "Orang"
           }
         ],
         transaction: t
